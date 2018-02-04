@@ -54,6 +54,23 @@ public class JSONTree extends JSONNode {
 	}
 	private void parseAttribute(String attribute, int index) {
 		System.out.println(attribute);
+		int charInd = 0;
+		boolean isQuote = false;
+		while(isQuote||attribute.charAt(charInd)!=',')
+			charInd++;
+		fieldNames[index] = attribute.substring(1,charInd-1);
+		String attributeValue = attribute.substring(charInd+1);
+		if(attributeValue.charAt(0)=='"') {
+			nodes[index] = new JSONAttribute(attributeValue.substring(1, attributeValue.length()-1),fieldNames[index]);
+			return;
+		}
+		if(attributeValue.charAt(0)=='{') {
+			nodes[index] = new JSONTree(attributeValue, fieldNames[index]);
+			return;
+		}
+		if(attributeValue.charAt(0)=='[') {
+			nodes[index] = new JSONArray(attributeValue, fieldNames[index]);
+		}
 	}
 	private void trimFrontAndEnd() {
 		while(value.charAt(0)!='{')
