@@ -12,9 +12,8 @@ public class JSONTree extends JSONNode {
 		trimFrontAndEnd();
 		removeWhiteSpace();
 		this.content = "{" + value + "}";
-		System.out.println(value);
-		System.out.println(getFieldCount());
 		fieldNames = new String[getFieldCount()];
+		nodes = new JSONNode[fieldNames.length];
 		parseJSON();
 	}
 	public String getName() {
@@ -27,10 +26,34 @@ public class JSONTree extends JSONNode {
 		return type;
 	}
 	private void parseJSON() {
-		int startIndex = 0, endIndex = 0;
+		String current = value;
+		int currentField = 0;
+		int currentIndex = 0;
 		int structDepth = 0, arrayDepth = 0;
 		boolean isQuote = false;
-		
+		while(currentField != fieldNames.length-1) {
+			while(isQuote||current.charAt(currentIndex)!=','||structDepth!=0||arrayDepth!=0) {
+				if(current.charAt(currentIndex)=='"')
+					isQuote = !isQuote;
+				if(!isQuote&&current.charAt(currentIndex)=='[')
+					arrayDepth++;
+				if(!isQuote&&current.charAt(currentIndex)==']')
+					arrayDepth--;
+				if(!isQuote&&current.charAt(currentIndex)=='{')
+					structDepth++;
+				if(!isQuote&&current.charAt(currentIndex)=='}')
+					structDepth--;
+				currentIndex++;
+			}
+			parseAttribute(current.substring(0,currentIndex), currentField);
+			current = current.substring(currentIndex+1);
+			currentIndex = 0;
+			currentField++;
+		}
+		parseAttribute(current, currentField);
+	}
+	private void parseAttribute(String attribute, int index) {
+		System.out.println(attribute);
 	}
 	private void trimFrontAndEnd() {
 		while(value.charAt(0)!='{')

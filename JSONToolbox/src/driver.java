@@ -13,9 +13,6 @@ public class driver {
 				inputLine = br.readLine();
 			}
 			JSONTree jt = new JSONTree(output, "root");
-			System.out.println(jt.getContent());
-			System.out.println(jt.getName());
-			System.out.println(jt.getType());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
